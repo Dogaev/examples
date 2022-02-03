@@ -16,7 +16,7 @@ import (
 
 func main() {
 	var (
-		resultCh     = make(chan string, 1)
+		resultCh     = make(chan string)
 		ctx, cancel  = context.WithCancel(context.Background())
 		taxiServices = []string{"uber", "yandexGO", "ситимобайл", "redtaxi"}
 		wg           sync.WaitGroup
@@ -45,7 +45,6 @@ func main() {
 }
 
 func requestRide(ctx context.Context, serviceName string, resultCh chan string) {
-	time.Sleep(3 * time.Second)
 
 	for {
 		select {
@@ -53,11 +52,12 @@ func requestRide(ctx context.Context, serviceName string, resultCh chan string) 
 			log.Printf("stopped the search in %q (%v)", serviceName, ctx.Err())
 			return
 		default:
-			if rand.Float64() > 0.75 {
+			if rand.Float64() > 0.90 {
 				resultCh <- serviceName
 				return
 			}
 
+			time.Sleep(1*time.Millisecond)
 			continue
 		}
 	}
